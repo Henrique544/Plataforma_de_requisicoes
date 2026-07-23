@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Agrupamento de Escolas Dona Rainha Leonor</title>
+  <link rel="stylesheet" href="/style.css"/>
+  <link rel="shortcut icon" href="imagem dos led.png" type="image/x-icon">
+</head>
+<body>
+
+<div class="toast-container" id="toastContainer"></div>   <!-- chama codigo do app.js com os emojis das notificações que aparecem no cantinho e depois desaparecem  --> 
+
+
+<div id="loginPage" class="page flex-page active">
+  <div class="login-bg-decoration"></div>
+  <div class="login-card">
+    <div class="login-logo">
+      <h1>Agrupamento de Escolas Rainha Dona Leonor</h1>
+      <p>Sistema de Requisições de Material</p>
+    </div>
+
+    <div id="loginAlert"></div>
+
+    <form id="loginForm" novalidate>
+      <div class="form-group">
+        <label class="form-label">Email</label>
+        <input type="email" id="loginEmail" class="form-input" placeholder="seu@email.pt"
+               autocomplete="email" maxlength="150" required/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Password</label>
+        <input type="password" id="loginPassword" class="form-input" placeholder="••••••••"
+               autocomplete="current-password" maxlength="128" required/>
+      </div>
+      <button type="submit" class="btn btn-primary btn-full btn-lg" id="loginBtn">
+        Entrar
+      </button>
+    </form>
+
+    <p style="text-align:center;margin-top:12px;font-size:13px;">
+  <a href="#" id="forgotLink" style="color:var(--gray-400);text-decoration:none;">
+    Esqueceu a sua password?
+  </a>
+</p>
+
+
+<!-- Secção: Recuperar password (escondida por defeito) -->
+<div id="forgotPasswordSection" class="login-section" style="display:none;">
+  <h2 style="color:var(--navy);margin-bottom:6px;font-size:20px;">Recuperar Password</h2>
+  <p style="color:var(--gray-400);font-size:13px;margin-bottom:20px;">
+    Introduza o seu email e enviaremos um link para redefinir a sua password.
+  </p>
+
+  <div id="forgotAlert"></div>
+
+  <form id="forgotForm" novalidate>
+    <div class="form-group">
+      <label class="form-label">Email</label>
+      <input type="email" id="forgotEmail" class="form-input"
+             placeholder="seu@email.pt" autocomplete="email" maxlength="150"/>
+    </div>
+
+    <button type="submit" class="btn btn-navy btn-full btn-lg" id="forgotSubmitBtn">
+      Enviar instruções
+    </button>
+  </form>
+
+  <p style="text-align:center;margin-top:16px;font-size:13px;">
+    <a href="#" id="forgotBackBtn" style="color:var(--gray-400);text-decoration:none;">
+      Voltar ao login
+    </a>
+  </p>
+</div>
+
+
+<!-- Secção: Nova password (aparece quando URL tem ?token=) -->
+<div id="resetPasswordSection" class="login-section" style="display:none;">
+  <h2 style="color:var(--navy);margin-bottom:6px;font-size:20px;">Nova Password</h2>
+  <p style="color:var(--gray-400);font-size:13px;margin-bottom:20px;">
+    Escolha uma nova password para a sua conta.
+  </p>
+
+  <div id="resetAlert"></div>
+
+  <form id="resetPasswordForm" novalidate>
+    <div class="form-group">
+      <label class="form-label">Nova Password</label>
+      <input type="password" id="resetPassword" class="form-input"
+             placeholder="Mínimo 8 caracteres"
+             autocomplete="new-password" maxlength="128"/>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Confirmar Password</label>
+      <input type="password" id="resetPasswordConfirm" class="form-input"
+             placeholder="Repetir password"
+             autocomplete="new-password" maxlength="128"/>
+    </div>
+
+    <button type="submit" class="btn btn-navy btn-full btn-lg" id="resetSubmitBtn">
+      Guardar nova password
+    </button>
+  </form>
+</div>
+
+    <p class="text-center mt-16" style="font-size:13px;color:var(--gray-300)">
+      Não tem conta? Registre-se <a href="criar_conta.html" style="color: red;">aqui</a>
+    </p>
+  </div>
+</div>
+
+<div id="appPage" class="page">
+
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-brand">
+      <h2>Agrupamento de Escolas Rainha Dona Leonor</h2>
+      <p>Sistema de Requisições de Material</p>
+    </div>
+
+    <nav class="sidebar-nav" id="sidebarNav">
+      <!-- Parte feita em JavaScript -->
+    </nav>
+
+    <div class="sidebar-user">
+      <div class="user-avatar" id="userAvatar">?</div>
+      <div class="user-info">
+        <div class="user-name" id="userNameDisplay">—</div>
+        <div class="user-role" id="userRoleDisplay">—</div>
+      </div>
+      <button class="btn-logout" id="logoutBtn" title="Sair">⏻</button>
+    </div>
+  </aside>
+
+  <div class="main-content">
+    <header class="main-header">
+      <div class="header-title">
+        <h1 id="viewTitle">Dashboard</h1>
+        <p id="viewSubtitle">Bem-vindo ao sistema</p>
+      </div>
+      <div class="header-actions" id="headerActions"></div>
+    </header>
+
+    <div class="page-body">
+
+      <div class="view active" id="viewDashboard">
+        <div class="stats-grid" id="statsGrid">
+          <div class="stat-card"><div class="spinner"></div></div>
+        </div>
+
+        <div id="pendingSection" class="hidden">
+          <div class="section-header">
+            <div>
+              <div class="section-title">Pedidos Pendentes</div>
+              <div class="section-subtitle">Requerem aprovação do administrador</div>
+            </div>
+          </div>
+          <div id="pendingList">
+            <div class="loading-wrapper"><div class="spinner"></div></div>
+          </div>
+        </div>
+
+        <div id="recentSection" class="mt-24">
+          <div class="section-header">
+            <div>
+              <p>Requisições Recentes</p>
+            </div>
+            <button class="btn btn-secondary btn-sm" data-nav="aquisicoes">Ver todas</button>
+          </div>
+          <div id="recentList">
+            <div class="loading-wrapper"><div class="spinner"></div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="view" id="viewMaterials">
+        <div class="filter-bar">
+          <div class="search-wrapper">
+            <span class="search-icon">🔍</span>
+            <input type="text" class="search-input form-input" id="matSearch"
+                   placeholder="Pesquisar material..." maxlength="100"/>
+          </div>
+          <select class="filter-select" id="matCatFilter">
+            <option value="">Todas as categorias</option>
+            <option>Multimédia</option><option>Programação e Robótica</option><option>STEM</option><option>Outros</option>
+          </select>
+          <select class="filter-select" id="matStatusFilter">
+            <option value="">Todos os estados</option>
+            <option value="disponivel">Disponível</option>
+            <option value="indisponivel">Indisponível</option>
+            <option value="manutencao">Manutenção</option>
+          </select>
+          <select class="filter-select" id="matEscolaFilter" style="display:none;">
+            <option value="">Todas as escolas</option>
+            <option value="rainha">Rainha D. Leonor</option>
+            <option value="eugenio">Eugénio dos Santos</option>
+          </select>
+        </div>
+        <div class="materials-grid" id="materialsGrid">
+          <div class="loading-wrapper"><div class="spinner"></div></div>
+        </div>
+      </div>
+
+      <div class="view" id="viewAquisicoes">
+        <div class="filter-bar">
+          <select class="filter-select" id="aqStatusFilter">
+            <option value="">Todos os estados</option>
+            <option value="pendente">Pendente</option>
+            <option value="aprovado">Aprovado</option>
+            <option value="em_uso">Em Uso</option>
+            <option value="por_entregar">Por Entregar</option>
+            <option value="devolvido">Devolvido</option>
+            <option value="rejeitado">Rejeitado</option>
+            <option value="cancelado">Cancelado</option>
+          </select>
+        </div>
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>Material</th>
+                <th>Solicitante</th>
+                <th>Quantidade</th>
+                <th>Período</th>
+                <th>Estado</th>
+                <th>Ações</th>
+              </tr>
+            </thead>
+            <tbody id="aquisicoesTbody">
+              <tr><td colspan="6"><div class="loading-wrapper"><div class="spinner"></div></div></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="view" id="viewUsers">
+        <div class="filter-bar">
+          <select class="filter-select" id="userRoleFilter">
+            <option value="">Todos os perfis</option>
+            <option value="aluno">Aluno</option>
+            <option value="professor">Professor</option>
+            <option value="admin">Admin</option>
+          </select>
+        </div>
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>Nome</th>
+                <th>Email</th>
+                <th>Nº</th>
+                <th>Perfil</th>
+                <th>Estado</th>
+                <th>Criado em</th>
+                <th>Ações</th>
+              </tr>
+            </thead>
+            <tbody id="usersTbody">
+              <tr><td colspan="7"><div class="loading-wrapper"><div class="spinner"></div></div></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+
+<div class="modal-overlay" id="materialModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h2>Detalhe do Material</h2>
+      <button class="modal-close" data-close="materialModal">✕</button>
+    </div>
+    <div class="modal-body" id="materialModalBody">
+      <div class="loading-wrapper"><div class="spinner"></div></div>
+    </div>
+    <div class="modal-footer" id="materialModalFooter"></div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="requestModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h2>Requisitar Material</h2>
+      <button class="modal-close" data-close="requestModal">✕</button>
+    </div>
+    <div class="modal-body">
+      <div id="requestAlert"></div>
+      <form id="requestForm" novalidate>
+        <input type="hidden" id="reqMaterialId"/>
+        <div class="form-group">
+          <label class="form-label">Material</label>
+          <input type="text" id="reqMaterialName" class="form-input" disabled/>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Quantidade</label>
+            <input type="number" id="reqQuantidade" class="form-input" min="1" max="999" value="1" required/>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Disponível</label>
+            <input type="text" id="reqDisponivel" class="form-input" disabled/>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Data Início</label>
+            <input type="date" id="reqDataInicio" class="form-input" required/>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Data Fim</label>
+            <input type="date" id="reqDataFim" class="form-input" required/>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Motivo da Requisição</label>
+          <textarea id="reqMotivo" class="form-input" rows="3"
+                    placeholder="Descreva o motivo da requisição (mínimo 10 caracteres)..."
+                    maxlength="500" required></textarea>
+        </div>
+        <div id="reqAprovacaoInfo" class="hidden">
+          <div class="alert alert-warning">
+            ⚠️ Como aluno, a sua requisição precisa de aprovação do administrador.
+          </div>
+        </div>
+        <div class="form-group">
+  <label>Professor responsável <span style="color:var(--red)">*</span></label>
+  <input type="text" id="reqProfSearch" class="form-input"
+         placeholder="Procurar professor..." autocomplete="off" />
+  <div id="reqProfessoresList" class="prof-list"></div>
+</div>
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" data-close="requestModal">Cancelar</button>
+      <button class="btn btn-primary" id="reqSubmitBtn">Submeter Requisição</button>
+    </div>
+  </div>
+</div>
+
+
+<div class="modal-overlay" id="materialFormModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h2 id="materialFormTitle">Adicionar Material</h2>
+      <button class="modal-close" data-close="materialFormModal">✕</button>
+    </div>
+    <div class="modal-body">
+      <div id="materialFormAlert"></div>
+      <form id="materialForm" novalidate>
+        <input type="hidden" id="matFormId"/>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Nome</label>
+            <input type="text" id="matFormNome" class="form-input" maxlength="200" required
+                   placeholder="Ex: Resma de papel A4"/>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Ícone (emoji)</label>
+            <input type="text" id="matFormIcone" class="form-input" maxlength="5" value="📦"
+                   placeholder="📦"/>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Descrição</label>
+          <textarea id="matFormDescricao" class="form-input" rows="2" maxlength="1000"
+                    placeholder="Descrição opcional..."></textarea>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Categoria</label>
+            <select id="matFormCategoria" class="form-input" required>
+              <option value="">Selecionar...</option>
+              <option>Multimédia</option><option>Programação e Robótica</option><option>STEM</option>
+              <option>Outros</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Quantidade</label>
+            <input type="number" id="matFormQuantidade" class="form-input" min="0" max="99999" required/>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Estado</label>
+            <select id="matFormStatus" class="form-input">
+              <option value="disponivel">Disponível</option>
+              <option value="indisponivel">Indisponível</option>
+              <option value="manutencao">Em Manutenção</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Escola</label>
+            <select id="matFormEscola" class="form-input" required>
+              <option value="rainha">Rainha D. Leonor</option>
+              <option value="eugenio">Eugénio dos Santos</option>
+            </select>
+          </div>
+        </div>
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" data-close="materialFormModal">Cancelar</button>
+      <button class="btn btn-primary" id="matFormSubmitBtn">Guardar</button>
+    </div>
+  </div>
+</div>
+
+
+<div class="modal-overlay" id="userFormModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h2 id="userFormTitle">Adicionar Utilizador</h2>
+      <button class="modal-close" data-close="userFormModal">✕</button>
+    </div>
+    <div class="modal-body">
+      <div id="userFormAlert"></div>
+      <form id="userForm" novalidate>
+        <input type="hidden" id="userFormId"/>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Nome Completo</label>
+            <input type="text" id="userFormNome" class="form-input" maxlength="100" required
+                   placeholder="Nome Sobrenome"/>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Número</label>
+            <input type="text" id="userFormNumero" class="form-input" maxlength="20"
+                   placeholder="Ex: A2024001"/>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Email</label>
+          <input type="email" id="userFormEmail" class="form-input" maxlength="150" required
+                 placeholder="utilizador@escola.pt"/>
+        </div>
+        <div class="form-group" id="userFormPasswordGroup">
+          <label class="form-label">Password</label>
+          <input type="password" id="userFormPassword" class="form-input" maxlength="128"
+                 placeholder="Mínimo 8 caracteres, maiúscula, minúscula e número"/>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Perfil</label>
+            <select id="userFormRole" class="form-input" required>
+              <option value="aluno">Aluno</option>
+              <option value="professor">Professor</option>
+              <option value="gestor">Gestor</option>
+              <option value="admin">Admin</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Estado</label>
+            <select id="userFormAtivo" class="form-input">
+              <option value="true">Ativo</option>
+              <option value="false">Inativo</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Escola</label>
+          <select id="userFormEscola" class="form-input" required>
+            <option value="rainha">Rainha D. Leonor</option>
+            <option value="eugenio">Eugénio dos Santos</option>
+          </select>
+        </div>
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" data-close="userFormModal">Cancelar</button>
+      <button class="btn btn-primary" id="userFormSubmitBtn">Guardar</button>
+    </div>
+  </div>
+</div>
+
+
+<div class="modal-overlay" id="rejectModal">
+  <div class="modal" style="max-width:400px">
+    <div class="modal-header">
+      <h2>Rejeitar Pedido</h2>
+      <button class="modal-close" data-close="rejectModal">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label class="form-label">Motivo (opcional)</label>
+        <textarea id="rejectMotivo" class="form-input" rows="3" maxlength="500"
+                  placeholder="Explique o motivo da rejeição..."></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" data-close="rejectModal">Cancelar</button>
+      <button class="btn btn-danger" id="rejectConfirmBtn">Rejeitar</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="aqEditModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h2>Editar Requisição</h2>
+      <button class="modal-close" data-close="aqEditModal">✕</button>
+    </div>
+    <div class="modal-body">
+      <div id="aqEditAlert"></div>
+      <form id="aqEditForm" novalidate>
+        <input type="hidden" id="aqEditId"/>
+        <div class="form-group">
+          <label class="form-label">Material</label>
+          <input type="text" id="aqEditMaterial" class="form-input" disabled/>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Quantidade</label>
+            <input type="number" id="aqEditQuantidade" class="form-input" min="1" max="999" required/>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Estado</label>
+            <select id="aqEditStatus" class="form-input">
+              <option value="aprovado">Aprovado</option>
+              <option value="em_uso">Em Uso</option>
+              <option value="por_entregar">Por Entregar</option>
+              <option value="devolvido">Devolvido</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Data Início</label>
+            <input type="date" id="aqEditDataInicio" class="form-input" required/>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Data Fim</label>
+            <input type="date" id="aqEditDataFim" class="form-input" required/>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Motivo</label>
+          <textarea id="aqEditMotivo" class="form-input" rows="3" maxlength="500" required></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Observação (admin)</label>
+          <textarea id="aqEditObservacao" class="form-input" rows="2" maxlength="500" placeholder="Nota interna — não visível para quem requisitou"></textarea>
+        </div>
+        <p style="font-size:12px;color:var(--gray-500);margin-top:-4px;">O período máximo de uma requisição é de 1 semana (7 dias).</p>
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" data-close="aqEditModal">Cancelar</button>
+      <button class="btn btn-primary" id="aqEditSubmitBtn">Guardar Alterações</button>
+    </div>
+  </div>
+</div>
+
+<script src="/js/app.js"></script>
+</body>
+</html>

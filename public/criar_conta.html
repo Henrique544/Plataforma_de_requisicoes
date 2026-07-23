@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Agrupamento de Escola Rainha Dona Leonor</title>
+  <link rel="stylesheet" href="style.css"/>
+  <link rel="shortcut icon" href="imagem dos led.png" type="image/x-icon">
+</head>
+<body>
+
+<div class="toast-container" id="toastContainer"></div>
+
+<div style="min-height:100vh;display:flex;align-items:center;justify-content:center;background:var(--navy);position:relative;overflow:hidden;">
+
+  <div class="login-bg-decoration"></div>
+
+  <div class="login-card" style="max-width:520px;">
+
+    <div class="login-logo">
+      <h1>Agrupamento de Escolas Rainha Dona Leonor</h1>
+      <p>Criar Nova Conta</p>
+    </div>
+
+    <div id="registerAlert"></div>
+
+    <!-- Formulário de registo  -->
+    <form id="registerForm" novalidate>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Nome Completo *</label>
+          <input type="text" id="regNome" class="form-input"
+                 placeholder="Nome Sobrenome"
+                 autocomplete="name" maxlength="100" required/>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Número</label>
+          <input type="text" id="regNumero" class="form-input"
+                 placeholder="Ex: A2024001"
+                 maxlength="20"/>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Email *</label>
+        <input type="email" id="regEmail" class="form-input"
+               placeholder="seu@email.pt"
+               autocomplete="email" maxlength="150" required/>
+      </div>
+
+    <div class="form-group">
+        <label class="form-label">Escola *</label>
+        <select id="regEscola" class="form-input" required>
+          <option value="">— Selecione a sua escola —</option>
+          <option value="rainha">Rainha Dona Leonor</option>
+          <option value="eugenio">Escola eugenio dos santos</option>
+        </select>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Password *</label>
+          <input type="password" id="regPassword" class="form-input"
+                 placeholder="Mínimo 8 caracteres"
+                 autocomplete="new-password" maxlength="128" required/>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Confirmar Password *</label>
+          <input type="password" id="regPasswordConfirm" class="form-input"
+                 placeholder="Repetir password"
+                 autocomplete="new-password" maxlength="128" required/>
+        </div>
+      </div>
+
+      <!-- Indicador de força da password -->
+      <div id="pwStrength" style="margin-top:-12px;margin-bottom:16px;display:none;">
+        <div style="height:4px;border-radius:2px;background:var(--gray-100);overflow:hidden;">
+          <div id="pwStrengthBar" style="height:100%;width:0;transition:all 0.3s;border-radius:2px;"></div>
+        </div>
+        <span id="pwStrengthLabel" style="font-size:11px;color:var(--gray-500);margin-top:4px;display:block;"></span>
+      </div>
+
+
+      <!-- Termos obrigatórios -->
+      <div style="display:flex;align-items:center;gap:8px;margin-top:15px;">
+    <input type="checkbox" id="regTermos" required
+         style="width:16px;height:16px;cursor:pointer;accent-color:var(--navy);flex-shrink:0;"/>
+      <label for="regTermos" style="font-size:13px;cursor:pointer">
+        Li e aceito os <a href="termos.html" target="_blank" style="color: red; font-size:13px; margin-top: 12px; ">termos</a>.
+      </label>
+    </div>
+      <br>
+      <br>
+
+      <button type="submit" class="btn btn-navy btn-full btn-lg" id="registerBtn">
+        Criar Conta
+      </button>
+
+    </form>
+
+    <p class="text-center mt-16" style="font-size:13px;color:var(--gray-300);">
+      Já tem conta? <a href="/" style="color:red;font-weight:600;">Entrar aqui</a>
+    </p>
+    </div>
+
+  </div>
+</div>
+
+<script>
+'use strict';
+
+const $ = (sel) => document.querySelector(sel);
+const setText = (el, txt) => { if (el) el.textContent = String(txt ?? ''); };
+
+function showToast(msg, type = 'success') {
+  const icons = { success: '✅', error: '❌', warning: '⚠️', info: 'ℹ️' };
+  const container = $('#toastContainer');
+  const toast = document.createElement('div');
+  toast.className = `toast ${type}`;
+
+  const icon = document.createElement('span');
+  icon.className = 'toast-icon';
+  setText(icon, icons[type] || 'ℹ️');
+
+  const text = document.createElement('span');
+  text.className = 'toast-msg';
+  setText(text, msg);
+
+  toast.appendChild(icon);
+  toast.appendChild(text);
+  container.appendChild(toast);
+
+  setTimeout(() => {
+    toast.style.animation = 'toastIn 0.3s reverse both';
+    setTimeout(() => toast.remove(), 300);
+  }, 4000);
+}
+
+function showAlert(msg, type = 'error') {
+  const el = $('#registerAlert');
+  el.innerHTML = '';
+  const div = document.createElement('div');
+  div.className = `alert alert-${type}`;
+  setText(div, msg);
+  el.appendChild(div);
+  el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+function clearAlert() { $('#registerAlert').innerHTML = ''; }
+
+// Força da password 
+$('#regPassword').addEventListener('input', function () {
+  const val  = this.value;
+  const wrap = $('#pwStrength');
+  const bar  = $('#pwStrengthBar');
+  const lbl  = $('#pwStrengthLabel');
+
+  if (!val) { wrap.style.display = 'none'; return; }
+  wrap.style.display = 'block';
+
+  let score = 0;
+  if (val.length >= 8)           score++;
+  if (val.length >= 12)          score++;
+  if (/[A-Z]/.test(val))         score++;
+  if (/[a-z]/.test(val))         score++;
+  if (/\d/.test(val))            score++;
+  if (/[^A-Za-z0-9]/.test(val)) score++;
+
+  const levels = [
+    { w: '16%',  color: '#e74c3c', label: 'Muito fraca'  },
+    { w: '33%',  color: '#e67e22', label: 'Fraca'        },
+    { w: '50%',  color: '#f39c12', label: 'Razoável'     },
+    { w: '66%',  color: '#3498db', label: 'Boa'          },
+    { w: '83%',  color: '#27ae60', label: 'Forte'        },
+    { w: '100%', color: '#1a8a5a', label: 'Muito forte'  },
+  ];
+  const lvl = levels[Math.min(score, 5)];
+  bar.style.width      = lvl.w;
+  bar.style.background = lvl.color;
+  setText(lbl, lvl.label);
+});
+
+// Sub,eter o registo
+$('#registerForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  clearAlert();
+
+  const nome     = $('#regNome').value.trim();
+  const numero   = $('#regNumero').value.trim();
+  const email    = $('#regEmail').value.trim();
+  const password = $('#regPassword').value;
+  const confirm  = $('#regPasswordConfirm').value;
+  const escola = $('#regEscola').value;
+  const termosAceites = $('#regTermos').checked;
+  const role     = document.querySelector('input[name="regRole"]:checked')?.value || 'aluno';
+
+  if (!nome || !email || !password || !confirm) {
+    showAlert('Preencha todos os campos obrigatórios (*).'); return;
+  }
+  if (nome.length < 2) {
+    showAlert('O nome deve ter pelo menos 2 caracteres.'); return;
+  }
+  if (!/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,10})+$/.test(email)) {
+    showAlert('Introduza um email válido.'); return;
+  }
+  if (password.length < 8) {
+    showAlert('A password deve ter no mínimo 8 caracteres.'); return;
+  }
+  if (!/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/.test(password)) {
+    showAlert('A password deve conter pelo menos uma maiúscula, uma minúscula e um número.'); return;
+  }
+  if (password !== confirm) {
+    showAlert('As passwords não coincidem.');
+    $('#regPasswordConfirm').classList.add('error'); return;
+  }
+  $('#regPasswordConfirm').classList.remove('error');
+
+if (!escola || !['rainha','eugenio'].includes(escola)) {
+  showAlert('Selecione a sua escola.'); return;
+}
+if (!termosAceites) {
+  showAlert('Para poder proseguir é obrigatorio aceitar os termos e condições da plataforma.'); return; // NOTA: não inclui politica de privacidade 
+}
+
+  const btn = $('#registerBtn');
+  setText(btn, 'A criar conta...');
+  btn.disabled = true;
+
+  try {
+    const res = await fetch('/api/auth/register', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'same-origin',
+      body: JSON.stringify({ nome, numero, email, escola, password, role })
+    });
+
+    const data = await res.json();
+
+    if (res.ok) {
+      // Esconde formulário e mostra mensagem de sucesso
+      $('#registerForm').style.display = 'none';
+      document.querySelector('.text-center.mt-16').style.display = 'none';
+      const alertEl = $('#registerAlert');
+      alertEl.innerHTML = '';
+      const div = document.createElement('div');
+      div.style.cssText = 'text-align:center;padding:32px 16px;';
+      div.innerHTML = `
+        <h3 style="color:var(--navy);margin-bottom:8px;">Conta criada com sucesso!</h3>
+        <p style="color:var(--gray-500);font-size:14px;margin-bottom:24px;">
+          A sua conta está a aguardar ativação pelo administrador.<br/>
+          Receberá um email quando a conta for ativada.
+        </p>
+        <a href="/" class="btn btn-navy">Voltar ao Login</a>
+      `;
+      alertEl.appendChild(div);
+    } else {
+      showAlert(data.message || 'Erro ao criar conta. Tente novamente.');
+      setText(btn, 'Criar Conta');
+      btn.disabled = false;
+    }
+  } catch (err) {
+    showAlert('Erro de ligação. Verifique a sua conexão e tente novamente.');
+    setText(btn, 'Criar Conta');
+    btn.disabled = false;
+  }
+});
+</script>
+
+</body>
+</html>

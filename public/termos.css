@@ -1,0 +1,183 @@
+::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --navy: #1a2744;
+      --gold: #c9a84c;
+      --gold-light: #e8d5a3;
+      --cream: #f8f5ef;
+      --text: #2c2c2c;
+      --muted: #6b6b6b;
+      --border: #ddd5c5;
+      --sidebar-w: 260px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Source Sans 3', sans-serif;
+      font-weight: 300;
+      background: var(--cream);
+      color: var(--text);
+      line-height: 1.75;
+    }
+
+    header {
+      background: var(--navy);
+      color: #fff;
+      padding: 48px 40px 36px;
+      border-bottom: 4px solid var(--gold);
+    }
+    header .badge {
+      display: inline-block;
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 12px;
+    }
+    header h1 {
+      font-size: clamp(1.6rem, 3vw, 2.4rem);
+      font-weight: 600;
+      line-height: 1.2;
+    }
+    header p {
+      margin-top: 8px;
+      font-size: 0.9rem;
+      color: #aab4cc;
+    }
+
+    .layout {
+      display: flex;
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 20px;
+      gap: 48px;
+    }
+
+    nav.terms-sidebar {
+      flex: 0 0 var(--sidebar-w);
+      padding: 40px 0;
+    }
+    nav.terms-sidebar .sticky {
+      position: sticky;
+      top: 32px;
+    }
+    nav.terms-sidebar h2 {
+      font-size: 0.65rem;
+      font-weight: 600;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 16px;
+      padding-left: 16px;
+    }
+    nav.terms-sidebar ul {
+      list-style: none;
+      border-left: 2px solid var(--border);
+    }
+    nav.terms-sidebar ul li a {
+      display: block;
+      padding: 7px 16px;
+      font-size: 0.85rem;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.2s, border-left-color 0.2s;
+      border-left: 2px solid transparent;
+      margin-left: -2px;
+    }
+    nav.terms-sidebar ul li a:hover,
+    nav.terms-sidebar ul li a.active {
+      color: var(--navy);
+      border-left-color: var(--gold);
+      font-weight: 600;
+    }
+
+    main {
+      flex: 1;
+      padding: 48px 0 80px;
+    }
+
+    .last-updated {
+      font-size: 0.8rem;
+      color: var(--muted);
+      margin-bottom: 40px;
+      padding: 12px 16px;
+      background: #fff;
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--gold);
+      border-radius: 0 4px 4px 0;
+    }
+
+    section {
+      margin-bottom: 52px;
+      scroll-margin-top: 32px;
+    }
+
+    section h2 {
+      font-size: 1.35rem;
+      font-weight: 600;
+      color: var(--navy);
+      margin-bottom: 16px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    section h2 .num {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 28px;
+      height: 28px;
+      background: var(--navy);
+      color: var(--gold);
+      font-size: 0.75rem;
+      font-weight: 600;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    section p {
+      font-size: 0.95rem;
+      color: var(--text);
+      margin-bottom: 12px;
+    }
+
+    section ul {
+      padding-left: 20px;
+      margin-bottom: 12px;
+    }
+    section ul li {
+      font-size: 0.95rem;
+      margin-bottom: 6px;
+      color: var(--text);
+    }
+
+    .highlight-box {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--navy);
+      border-radius: 0 6px 6px 0;
+      padding: 16px 20px;
+      margin: 16px 0;
+      font-size: 0.9rem;
+    }
+    .highlight-box strong { color: var(--navy); }
+
+    footer {
+      background: var(--navy);
+      color: #aab4cc;
+      text-align: center;
+      padding: 24px 20px;
+      font-size: 0.8rem;
+      border-top: 3px solid var(--gold);
+    }
+    footer strong { color: var(--gold-light); }
+
+    @media (max-width: 720px) {
+      .layout { flex-direction: column; gap: 0; padding: 0 16px; }
+      nav.terms-sidebar { display: none; }
+      header { padding: 32px 20px 24px; }
+    }
