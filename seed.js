@@ -10,18 +10,18 @@ const seed = async () => {
   console.log('A criar utilizadores...');
 
   // Admin
-  const adminExists = await User.findOne({ email: 'aerdlyoutube@aerdl.eu' });
+  const adminExists = await User.findOne({ email: 'aerdlyoutube@aerdl.eu' }); 
   if (!adminExists) {
     await User.create({
       nome: 'Administrador',
-      email: 'aerdlyoutube@aerdl.eu',
-      password: 'aerdlyoutube2526!!!',
+      email: 'aerdlyoutube@aerdl.eu', 
+      password: 'aerdlyoutube2526!!!',    //   MUDAR ANTES DE PUBLICAR
       telemovel: '.',
       role: 'admin',
       escola: 'rainha',
       numero: 'ADM001'
     });
-    console.log('  ✓ Admin criado: aerdlyoutube@aerdl.eu / aerdlyoutube2526!!!  (atenção mudar a password depois) ');
+    console.log('  ✓ Admin criado: aerdlyoutube@aerdl.eu / aerdlyoutube2526!!!  (atenção mudar a password depois) ');  //   MUDAR ANTES DE PUBLICAR
   } else {
     console.log('Admin já existe');
   }
